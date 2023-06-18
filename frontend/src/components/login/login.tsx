@@ -19,7 +19,7 @@ function Login() {
         setPassword(pass.target.value);
     }
 
-    function handleKeyPress(event: React.KeyboardEvent<HTMLInputElement>) {
+    function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
         if (event.key==="Enter") {
             LoginButton_OnClickHandler();
         }
@@ -59,7 +59,7 @@ function Login() {
                         onChange={Email_OnChangeHandler}
                         style={{ borderColor: alertBorderColor }} id="border-element"
                         className={`${style["shake-animation"]} ${alertBorderColor === "red" ? style["shake-animation"] : " "}`} /></p>
-                    <p>Password: <input type="password" value={password} placeholder="Enter Password" onChange={Pass_OnChange} onKeyPress={handleKeyPress} /></p>
+                    <p>Password: <input type="password" value={password} placeholder="Enter Password" onChange={Pass_OnChange} onKeyDown={handleKeyPress} /></p>
                     <button onClick={LoginButton_OnClickHandler} className={style["login-button"]}>Login</button>
                 </div>
             </div>
