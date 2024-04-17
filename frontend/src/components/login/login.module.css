@@ -1,0 +1,117 @@
+*{
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.left{
+    width: 100%;
+    height: 20vh;
+    background-size: cover;
+    background-position: center top 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-position:center top -110px;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    /* background-color:#3fc8da ; */
+    background: linear-gradient(to right,#1f80ab,#3fc8da);
+}
+.flex-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.heading{
+    width: 270px;
+    height: 90px;
+    border: 2px solid white;
+    padding-top: 5px;
+    font-size: 0.9rem;
+}
+input{
+    width: 21rem ;
+    height: 2.2rem;
+    display: block;
+    margin-bottom: 2.7rem;
+    padding: 1rem;
+    outline: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    border: none;
+    border: 1px solid gray;
+}
+.right{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 4rem;
+    padding: 3rem;
+}
+.main-heading{
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+}
+.seperator{
+    height: 1px;
+    width: 100%;
+    background-color: #1f80ab;
+    margin: 0.5rem 0 1rem 0;
+}
+.login-button{
+    width: 21rem ;
+    height: 2.3rem;
+    display: block;
+    padding: .5rem 0 .5rem 0;
+    font-size: 18px;
+    text-transform: uppercase;
+    color: rgb(0, 0, 0);
+    border: none;
+    background: linear-gradient(to right,#1f80ab,#3fc8da);
+    letter-spacing: 1px;
+    border-radius: 20px;
+}
+.login-button:hover{
+    cursor: pointer;
+    opacity: 90%;
+}
+
+@media screen and (min-width: 900px) {
+    .flex-container {
+        flex-direction: row;
+    }
+    
+    .left {
+        width: 35%;
+        height: 100vh;
+        background-position: center;
+    }
+    
+    .content {
+        width: 65%;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .right {
+        margin-top: 0;
+    }
+    input{
+        width: 23rem;
+        height: 2.7rem;
+        font-size:1.2rem ;
+    }
+    .login-button{
+        width: 23rem;
+        height: 2.5rem;
+    }
+    .heading{
+      font-size: 1.5rem;
+      width: 320px;
+      height: 130px;
+    }
+}
