@@ -1,7 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"backend/apis"
+	"net/http"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+	http.HandleFunc("/generate/password", apis.GeneratePassword)
+
+	_ = http.ListenAndServe(":8080", nil)
 }
