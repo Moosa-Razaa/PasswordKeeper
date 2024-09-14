@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a204d921-091b-4720-86f3-1cf61c102e9d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/apis/password_geneartor.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/middlewares/rest-method-checker.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dtos/request/generate_password_request.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apis/password_geneartor.go" beforeDir="false" afterPath="$PROJECT_DIR$/apis/password_geneartor.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middlewares/rest-method-checker.go" beforeDir="false" afterPath="$PROJECT_DIR$/middlewares/rest-method-checker.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,9 +50,16 @@
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "/home/moosa-raza/Documents/Projects/PasswordKeeper/PasswordKeeper/backend/main.go"
+    "onboarding.tips.debug.path": "/home/moosa-raza/Documents/Projects/PasswordKeeper/PasswordKeeper/backend/main.go",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dtos/request" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="go build backend" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="backend" />

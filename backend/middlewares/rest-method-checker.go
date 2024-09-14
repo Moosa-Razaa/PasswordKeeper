@@ -2,9 +2,9 @@ package middlewares
 
 import "net/http"
 
-func VerifyGet(next http.Handler) http.Handler {
-	return RestMethodCheckerMiddleware(next, http.MethodGet)
-}
+//func VerifyGet(next http.Handler) http.Handler {
+//	return RestMethodCheckerMiddleware(next, http.MethodGet)
+//}
 
 func VerifyPost(next http.Handler) http.Handler {
 	return RestMethodCheckerMiddleware(next, http.MethodPost)
