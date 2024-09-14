@@ -157,7 +157,7 @@ func GenerateRandomPassword(req request.GeneratePasswordRequest) string {
 	return "password"
 }
 
-func GeneratePassword(w http.ResponseWriter, r *http.Request) (string, int) {
+func GeneratePassword(r *http.Request) (string, int) {
 	log.Printf("request coming from %s", r.RemoteAddr)
 
 	body, readAllError := io.ReadAll(r.Body)
@@ -175,8 +175,6 @@ func GeneratePassword(w http.ResponseWriter, r *http.Request) (string, int) {
 	}
 
 	randomPassword := GenerateRandomPassword(requestBody)
-
-	_, _ = w.Write([]byte("password"))
 
 	return randomPassword, http.StatusOK
 }
