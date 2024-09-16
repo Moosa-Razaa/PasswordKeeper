@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func PasswordGeneratorService(w http.ResponseWriter, r *http.Request) {
+func PasswordGeneratorController(w http.ResponseWriter, r *http.Request) {
 	response, httpStatusCode := services.GeneratePassword(r)
 
 	if httpStatusCode != http.StatusOK {
