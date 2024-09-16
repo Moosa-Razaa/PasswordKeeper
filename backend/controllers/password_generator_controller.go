@@ -1,12 +1,12 @@
-package services
+package controllers
 
 import (
-	"backend/apis"
+	"backend/services"
 	"net/http"
 )
 
 func PasswordGeneratorService(w http.ResponseWriter, r *http.Request) {
-	response, httpStatusCode := apis.GeneratePassword(r)
+	response, httpStatusCode := services.GeneratePassword(r)
 
 	if httpStatusCode != http.StatusOK {
 		w.WriteHeader(httpStatusCode)

@@ -1,12 +1,12 @@
 package main
 
 import (
+	"backend/controllers"
 	"backend/middlewares"
-	"backend/services"
 	"net/http"
 )
 
 func main() {
-	http.Handle("/generate/password", middlewares.VerifyPost(http.HandlerFunc(services.PasswordGeneratorService)))
+	http.Handle("/generate/password", middlewares.VerifyPost(http.HandlerFunc(controllers.PasswordGeneratorService)))
 	_ = http.ListenAndServe(":8080", nil)
 }
