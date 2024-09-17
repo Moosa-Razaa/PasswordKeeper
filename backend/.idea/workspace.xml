@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a204d921-091b-4720-86f3-1cf61c102e9d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/dtos/request/add_new_password_set_request.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repositories/add_new_password_set.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repositories/repository_file_handler.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,6 +55,7 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/repositories" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/dtos/request" />
     </key>
