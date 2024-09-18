@@ -1,6 +1,18 @@
 package controllers
 
-func AddNewPassword() {
-	// Add new password to the database
-	// Return the response
+import (
+	"backend/services"
+	"net/http"
+)
+
+func AddNewPassword(w http.ResponseWriter, r *http.Request) {
+	response, httpStatusCode := services.AddNewPassword(r)
+
+	if httpStatusCode != http.StatusOK {
+		w.WriteHeader(httpStatusCode)
+		_, _ = w.Write([]byte(response))
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write([]byte(response))
 }

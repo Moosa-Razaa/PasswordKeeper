@@ -1,88 +1,174 @@
 package repositories
 
 import (
+	"encoding/json"
+	"io"
 	"os"
-	"path/filepath"
 	"sync"
 )
 
 type FileHandler struct {
-	file  *os.File
-	mutex sync.Mutex
+	filePath string
+	mutex    sync.Mutex
 }
 
-var fileHandlerInstance *FileHandler
-var once sync.Once
+func GetFileHandlerInstance() *FileHandler {
+	var filePath = "passwords.json"
+	return &FileHandler{filePath: filePath}
+}
 
-func GetFilePath() (string, error) {
-	baseDirectory := os.Getenv("BASE_DIRECTORY")
+func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
 
-	if baseDirectory == "" {
-		baseDirectory = "/app/data"
+	file, fileOpenError := os.Open(fileHandlerInstance.filePath)
+	if fileOpenError != nil {
+		return nil, fileOpenError
 	}
 
-	filePath := filepath.Join(baseDirectory, "passwords.json")
-	directory := filepath.Dir(filePath)
+	byteValue, readAllError := io.ReadAll(file)
+	if readAllError != nil {
+		return nil, readAllError
+	}
 
-	if _, err := os.Stat(directory); os.IsNotExist(err) {
-		err = os.MkdirAll(directory, 0755)
-		if err != nil {
-			return "", err
+	var passwords []Password
+	unmarshalError := json.Unmarshal(byteValue, &passwords)
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	return passwords, nil
+}
+
+func (fileHandlerInstance *FileHandler) SaveNewPassword(newPassword Password) error {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
+	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if fileOpenError != nil {
+		return fileOpenError
+	}
+
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return readAllError
+	}
+
+	allPasswords = append(allPasswords, newPassword)
+
+	encodedPasswords, encodeError := json.Marshal(allPasswords)
+	if encodeError != nil {
+		return encodeError
+	}
+
+	_, writeError := file.Write(encodedPasswords)
+	if writeError != nil {
+		return writeError
+	}
+
+	return nil
+}
+
+func (fileHandlerInstance *FileHandler) CheckPasswordExists(password Password) (bool, error) {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return false, readAllError
+	}
+
+	for _, existingPassword := range allPasswords {
+		if existingPassword.domain == password.domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+			return true, nil
 		}
 	}
 
-	return filePath, nil
+	return false, nil
 }
 
-func GetFileHandlerInstance() (*FileHandler, error) {
-	var err error
+func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int, error) {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
 
-	filePath, geFilePathError := GetFilePath()
-	if geFilePathError != nil {
-		return nil, geFilePathError
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return -1, readAllError
 	}
 
-	once.Do(func() {
-		var file *os.File
-		file, err = os.OpenFile(filePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			return
+	for index, existingPassword := range allPasswords {
+		if existingPassword.domain == password.domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+			return index, nil
 		}
-		fileHandlerInstance = &FileHandler{
-			file: file,
-		}
-	})
-	return fileHandlerInstance, nil
-}
-
-func (fileHandler *FileHandler) Write(data string) (int, error) {
-	fileHandler.mutex.Lock()
-	defer fileHandler.mutex.Unlock()
-
-	return fileHandler.file.WriteString(data)
-}
-
-func (fileHandler *FileHandler) Read() (string, error) {
-	fileHandler.mutex.Lock()
-	defer fileHandler.mutex.Unlock()
-
-	fileInfo, err := fileHandler.file.Stat()
-	if err != nil {
-		return "", err
 	}
 
-	data := make([]byte, fileInfo.Size())
-	_, err = fileHandler.file.Read(data)
-	if err != nil {
-		return "", err
-	}
-
-	return string(data), nil
+	return -1, nil
 }
 
-func (fileHandler *FileHandler) Close() error {
-	fileHandler.mutex.Lock()
-	defer fileHandler.mutex.Unlock()
+func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password) error {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
 
-	return fileHandler.file.Close()
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return readAllError
+	}
+
+	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndex(updatedPassword)
+	if getPasswordIndexError != nil {
+		return getPasswordIndexError
+	}
+
+	allPasswords[passwordIndex] = updatedPassword
+
+	encodedPasswords, encodeError := json.Marshal(allPasswords)
+	if encodeError != nil {
+		return encodeError
+	}
+
+	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if fileOpenError != nil {
+		return fileOpenError
+	}
+
+	_, writeError := file.Write(encodedPasswords)
+	if writeError != nil {
+		return writeError
+	}
+
+	return nil
+}
+
+func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return readAllError
+	}
+
+	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndex(password)
+	if getPasswordIndexError != nil {
+		return getPasswordIndexError
+	}
+
+	allPasswords = append(allPasswords[:passwordIndex], allPasswords[passwordIndex+1:]...)
+
+	encodedPasswords, encodeError := json.Marshal(allPasswords)
+	if encodeError != nil {
+		return encodeError
+	}
+
+	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if fileOpenError != nil {
+		return fileOpenError
+	}
+
+	_, writeError := file.Write(encodedPasswords)
+	if writeError != nil {
+		return writeError
+	}
+
+	return nil
 }
