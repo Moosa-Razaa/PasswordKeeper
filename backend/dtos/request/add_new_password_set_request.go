@@ -1,5 +1,11 @@
 package request
 
+import (
+	"backend/repositories"
+	"github.com/google/uuid"
+	"time"
+)
+
 type PasswordRequest struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
@@ -12,4 +18,16 @@ func (passwordRequest *PasswordRequest) ValidatePasswordRequest() bool {
 		return true
 	}
 	return false
+}
+
+func (passwordRequest *PasswordRequest) ConvertToPassword() repositories.Password {
+	return repositories.Password{
+		PasswordSetId: uuid.New().String(),
+		Email:         passwordRequest.Email,
+		Username:      passwordRequest.Username,
+		Password:      passwordRequest.Password,
+		CreatedAt:     time.Now().String(),
+		UpdatedAt:     "",
+		Domain:        passwordRequest.Domain,
+	}
 }
