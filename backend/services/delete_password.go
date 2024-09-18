@@ -1,25 +1,13 @@
 package services
 
 import (
-	"backend/dtos/request"
-	"backend/repositories/add_new_password_set"
-	"encoding/json"
+	"backend/repositories/delete_password_set"
 	"io"
 	"log"
 	"net/http"
 )
 
-func ExtractBodyAsPasswordRequest(body []byte) (request.PasswordRequest, error) {
-	var req request.PasswordRequest
-	err := json.Unmarshal(body, &req)
-	if err != nil {
-		return request.PasswordRequest{}, err
-	}
-
-	return req, nil
-}
-
-func AddNewPassword(r *http.Request) (string, int) {
+func DeletePassword(r *http.Request) (string, int) {
 	log.Printf("request coming from %s", r.RemoteAddr)
 
 	body, readAllError := io.ReadAll(r.Body)
@@ -37,11 +25,11 @@ func AddNewPassword(r *http.Request) (string, int) {
 	}
 
 	password := requestBody.ConvertToPassword()
+	err := delete_password_set.DeletePasswordSet(password)
 
-	err := add_new_password_set.AddNewPasswordToRepository(password)
 	if err != nil {
-		return "Unable to add new password", http.StatusInternalServerError
+		return "Unable to delete password", http.StatusInternalServerError
 	}
 
-	return "Password added successfully", http.StatusOK
+	return "Password deleted successfully", http.StatusOK
 }
