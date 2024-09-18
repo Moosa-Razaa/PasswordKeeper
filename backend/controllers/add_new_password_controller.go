@@ -11,6 +11,7 @@ func AddNewPassword(w http.ResponseWriter, r *http.Request) {
 	if httpStatusCode != http.StatusOK {
 		w.WriteHeader(httpStatusCode)
 		_, _ = w.Write([]byte(response))
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

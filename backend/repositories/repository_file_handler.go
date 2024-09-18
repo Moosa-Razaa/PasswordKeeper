@@ -3,9 +3,22 @@ package repositories
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"os"
 	"sync"
 )
+
+func InitializeFileIfNotExist() error {
+	log.Printf("Checking if file exists")
+
+	var filePath = "passwords.json"
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		_, fileCreationError := os.Create(filePath)
+		return fileCreationError
+	}
+
+	return nil
+}
 
 type FileHandler struct {
 	filePath string
@@ -31,6 +44,10 @@ func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
 		return nil, readAllError
 	}
 
+	if len(byteValue) == 0 {
+		return []Password{}, nil
+	}
+
 	var passwords []Password
 	unmarshalError := json.Unmarshal(byteValue, &passwords)
 	if unmarshalError != nil {
@@ -41,17 +58,17 @@ func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
 }
 
 func (fileHandlerInstance *FileHandler) SaveNewPassword(newPassword Password) error {
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return readAllError
+	}
+
 	fileHandlerInstance.mutex.Lock()
 	defer fileHandlerInstance.mutex.Unlock()
 
 	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if fileOpenError != nil {
 		return fileOpenError
-	}
-
-	allPasswords, readAllError := fileHandlerInstance.ReadAll()
-	if readAllError != nil {
-		return readAllError
 	}
 
 	allPasswords = append(allPasswords, newPassword)
@@ -70,16 +87,13 @@ func (fileHandlerInstance *FileHandler) SaveNewPassword(newPassword Password) er
 }
 
 func (fileHandlerInstance *FileHandler) CheckPasswordExists(password Password) (bool, error) {
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
 		return false, readAllError
 	}
 
 	for _, existingPassword := range allPasswords {
-		if existingPassword.domain == password.domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
 			return true, nil
 		}
 	}
@@ -88,16 +102,13 @@ func (fileHandlerInstance *FileHandler) CheckPasswordExists(password Password) (
 }
 
 func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int, error) {
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
 		return -1, readAllError
 	}
 
 	for index, existingPassword := range allPasswords {
-		if existingPassword.domain == password.domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
 			return index, nil
 		}
 	}
@@ -106,9 +117,6 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int
 }
 
 func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password) error {
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
 		return readAllError
@@ -126,6 +134,9 @@ func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password)
 		return encodeError
 	}
 
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
 	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if fileOpenError != nil {
 		return fileOpenError
@@ -140,9 +151,6 @@ func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password)
 }
 
 func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error {
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
 		return readAllError
@@ -159,6 +167,9 @@ func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error 
 	if encodeError != nil {
 		return encodeError
 	}
+
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
 
 	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
 	if fileOpenError != nil {
