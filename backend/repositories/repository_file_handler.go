@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"encoding/json"
+	"errors"
 	"io"
 	"log"
 	"os"
@@ -107,13 +108,21 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int
 		return -1, readAllError
 	}
 
-	for index, existingPassword := range allPasswords {
-		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
-			return index, nil
+	if password.PasswordSetId == "" {
+		for index, existingPassword := range allPasswords {
+			if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+				return index, nil
+			}
+		}
+	} else {
+		for index, existingPassword := range allPasswords {
+			if existingPassword.PasswordSetId == password.PasswordSetId {
+				return index, nil
+			}
 		}
 	}
 
-	return -1, nil
+	return -1, errors.New("item not found")
 }
 
 func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password) error {
