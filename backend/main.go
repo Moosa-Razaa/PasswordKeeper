@@ -17,6 +17,7 @@ func main() {
 	http.Handle("/generate/password", middlewares.VerifyPost(http.HandlerFunc(controllers.PasswordGeneratorController)))
 	http.Handle("/create", middlewares.VerifyPost(http.HandlerFunc(controllers.AddNewPassword)))
 	http.Handle("/delete", middlewares.VerifyDelete(http.HandlerFunc(controllers.DeletePassword)))
+	http.Handle("/update", middlewares.VerifyPatch(http.HandlerFunc(controllers.UpdatePasswordController)))
 
 	serverListeningError := http.ListenAndServe(":8080", nil)
 
