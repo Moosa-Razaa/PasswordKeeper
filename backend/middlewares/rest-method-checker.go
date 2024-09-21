@@ -14,6 +14,10 @@ func VerifyDelete(next http.Handler) http.Handler {
 	return RestMethodCheckerMiddleware(next, http.MethodDelete)
 }
 
+func VerifyGet(next http.Handler) http.Handler {
+	return RestMethodCheckerMiddleware(next, http.MethodGet)
+}
+
 func VerifyPatch(next http.Handler) http.Handler {
 	return RestMethodCheckerMiddleware(next, http.MethodPatch)
 }
