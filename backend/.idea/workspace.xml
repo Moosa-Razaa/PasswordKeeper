@@ -5,6 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a204d921-091b-4720-86f3-1cf61c102e9d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/controllers/get_all_passwords_controller.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/repositories/get_all_password_set/get_all_password_set.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/get_all_passwords.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
