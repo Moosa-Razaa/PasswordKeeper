@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"sync"
+	"time"
 )
 
 func InitializeFileIfNotExist() error {
@@ -135,6 +136,11 @@ func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password)
 	if getPasswordIndexError != nil {
 		return getPasswordIndexError
 	}
+
+	previousPassword := allPasswords[passwordIndex]
+	updatedPassword.PasswordSetId = previousPassword.PasswordSetId
+	updatedPassword.CreatedAt = previousPassword.CreatedAt
+	updatedPassword.UpdatedAt = time.Now().String()
 
 	allPasswords[passwordIndex] = updatedPassword
 
