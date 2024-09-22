@@ -126,6 +126,21 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int
 	return -1, errors.New("item not found")
 }
 
+func (fileHandlerInstance *FileHandler) GetPasswordIndexWithoutPassword(password Password) (int, error) {
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return -1, readAllError
+	}
+
+	for index, existingPassword := range allPasswords {
+		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+			return index, nil
+		}
+	}
+
+	return -1, errors.New("item not found")
+}
+
 func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password) error {
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
@@ -171,7 +186,7 @@ func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error 
 		return readAllError
 	}
 
-	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndex(password)
+	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndexWithoutPassword(password)
 	if getPasswordIndexError != nil {
 		return getPasswordIndexError
 	}

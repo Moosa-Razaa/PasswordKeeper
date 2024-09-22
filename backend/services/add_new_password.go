@@ -32,7 +32,7 @@ func AddNewPassword(r *http.Request) (string, int) {
 		return "Unable to extract request body", http.StatusBadRequest
 	}
 
-	if requestBody.ValidatePasswordRequest() {
+	if !requestBody.ValidatePasswordRequest() {
 		return "Invalid request body", http.StatusBadRequest
 	}
 
