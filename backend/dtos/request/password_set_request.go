@@ -14,7 +14,7 @@ type PasswordRequest struct {
 }
 
 func (passwordRequest *PasswordRequest) ValidatePasswordRequest() bool {
-	if passwordRequest.Domain != "" && (passwordRequest.Email != "" || passwordRequest.Username != "") && passwordRequest.Password == "" {
+	if passwordRequest.Domain != "" && (passwordRequest.Email != "" || passwordRequest.Username != "") && passwordRequest.Password != "" {
 		return true
 	}
 	return false

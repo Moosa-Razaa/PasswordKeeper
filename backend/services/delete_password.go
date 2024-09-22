@@ -1,11 +1,22 @@
 package services
 
 import (
+	"backend/dtos/request"
 	"backend/repositories/delete_password_set"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 )
+
+func ExtractBodyAsDeletePasswordRequest(body []byte) (request.DeletePassword, error) {
+	var passwordRequest request.DeletePassword
+	err := json.Unmarshal(body, &passwordRequest)
+	if err != nil {
+		return request.DeletePassword{}, err
+	}
+	return passwordRequest, nil
+}
 
 func DeletePassword(r *http.Request) (string, int) {
 	log.Printf("request coming from %s", r.RemoteAddr)
@@ -15,12 +26,12 @@ func DeletePassword(r *http.Request) (string, int) {
 		return "Unable to read request body", http.StatusInternalServerError
 	}
 
-	requestBody, extractingRequestBodyError := ExtractBodyAsPasswordRequest(body)
+	requestBody, extractingRequestBodyError := ExtractBodyAsDeletePasswordRequest(body)
 	if extractingRequestBodyError != nil {
 		return "Unable to extract request body", http.StatusBadRequest
 	}
 
-	if requestBody.ValidatePasswordRequest() {
+	if !requestBody.ValidateDeletePasswordRequest() {
 		return "Invalid request body", http.StatusBadRequest
 	}
 
