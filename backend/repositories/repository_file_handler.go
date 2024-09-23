@@ -95,8 +95,14 @@ func (fileHandlerInstance *FileHandler) CheckPasswordExists(password Password) (
 	}
 
 	for _, existingPassword := range allPasswords {
-		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
-			return true, nil
+		if existingPassword.Domain == password.Domain {
+			if existingPassword.Email == password.Email && existingPassword.Username == "" {
+				return true, nil
+			}
+
+			if existingPassword.Username == password.Username && existingPassword.Email == "" {
+				return true, nil
+			}
 		}
 	}
 
