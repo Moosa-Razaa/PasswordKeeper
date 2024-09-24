@@ -207,7 +207,7 @@ func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error 
 	fileHandlerInstance.mutex.Lock()
 	defer fileHandlerInstance.mutex.Unlock()
 
-	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
+	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_WRONLY|os.O_TRUNC|os.O_CREATE, 0644)
 	if fileOpenError != nil {
 		return fileOpenError
 	}
