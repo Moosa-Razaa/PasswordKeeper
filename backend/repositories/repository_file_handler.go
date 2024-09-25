@@ -32,62 +32,6 @@ func GetFileHandlerInstance() *FileHandler {
 	return &FileHandler{filePath: filePath}
 }
 
-func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
-	file, fileOpenError := os.Open(fileHandlerInstance.filePath)
-	if fileOpenError != nil {
-		return nil, fileOpenError
-	}
-
-	byteValue, readAllError := io.ReadAll(file)
-	if readAllError != nil {
-		return nil, readAllError
-	}
-
-	if len(byteValue) == 0 {
-		return []Password{}, nil
-	}
-
-	var passwords []Password
-	unmarshalError := json.Unmarshal(byteValue, &passwords)
-	if unmarshalError != nil {
-		return nil, unmarshalError
-	}
-
-	return passwords, nil
-}
-
-func (fileHandlerInstance *FileHandler) SaveNewPassword(newPassword Password) error {
-	allPasswords, readAllError := fileHandlerInstance.ReadAll()
-	if readAllError != nil {
-		return readAllError
-	}
-
-	fileHandlerInstance.mutex.Lock()
-	defer fileHandlerInstance.mutex.Unlock()
-
-	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
-	if fileOpenError != nil {
-		return fileOpenError
-	}
-
-	allPasswords = append(allPasswords, newPassword)
-
-	encodedPasswords, encodeError := json.Marshal(allPasswords)
-	if encodeError != nil {
-		return encodeError
-	}
-
-	_, writeError := file.Write(encodedPasswords)
-	if writeError != nil {
-		return writeError
-	}
-
-	return nil
-}
-
 func (fileHandlerInstance *FileHandler) CheckPasswordExists(password Password) (bool, error) {
 	allPasswords, readAllError := fileHandlerInstance.ReadAll()
 	if readAllError != nil {
@@ -149,6 +93,62 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndexWithoutPassword(password
 	}
 
 	return -1, errors.New("item not found")
+}
+
+func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
+	file, fileOpenError := os.Open(fileHandlerInstance.filePath)
+	if fileOpenError != nil {
+		return nil, fileOpenError
+	}
+
+	byteValue, readAllError := io.ReadAll(file)
+	if readAllError != nil {
+		return nil, readAllError
+	}
+
+	if len(byteValue) == 0 {
+		return []Password{}, nil
+	}
+
+	var passwords []Password
+	unmarshalError := json.Unmarshal(byteValue, &passwords)
+	if unmarshalError != nil {
+		return nil, unmarshalError
+	}
+
+	return passwords, nil
+}
+
+func (fileHandlerInstance *FileHandler) SaveNewPassword(newPassword Password) error {
+	allPasswords, readAllError := fileHandlerInstance.ReadAll()
+	if readAllError != nil {
+		return readAllError
+	}
+
+	fileHandlerInstance.mutex.Lock()
+	defer fileHandlerInstance.mutex.Unlock()
+
+	file, fileOpenError := os.OpenFile(fileHandlerInstance.filePath, os.O_RDWR|os.O_CREATE, 0644)
+	if fileOpenError != nil {
+		return fileOpenError
+	}
+
+	allPasswords = append(allPasswords, newPassword)
+
+	encodedPasswords, encodeError := json.Marshal(allPasswords)
+	if encodeError != nil {
+		return encodeError
+	}
+
+	_, writeError := file.Write(encodedPasswords)
+	if writeError != nil {
+		return writeError
+	}
+
+	return nil
 }
 
 func (fileHandlerInstance *FileHandler) UpdatePassword(updatedPassword Password) error {
