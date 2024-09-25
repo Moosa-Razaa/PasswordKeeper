@@ -115,9 +115,13 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndex(password Password) (int
 		return -1, readAllError
 	}
 
+	if password.Password == "" {
+		return fileHandlerInstance.GetPasswordIndexWithoutPassword(password)
+	}
+
 	if password.PasswordSetId == "" {
 		for index, existingPassword := range allPasswords {
-			if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+			if existingPassword.Domain == password.Domain && existingPassword.Email == password.Email && existingPassword.Username == password.Username {
 				return index, nil
 			}
 		}
@@ -139,7 +143,7 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndexWithoutPassword(password
 	}
 
 	for index, existingPassword := range allPasswords {
-		if existingPassword.Domain == password.Domain && (existingPassword.Email == password.Email || existingPassword.Username == password.Username) {
+		if existingPassword.Domain == password.Domain && existingPassword.Email == password.Email && existingPassword.Username == password.Username {
 			return index, nil
 		}
 	}
@@ -192,7 +196,7 @@ func (fileHandlerInstance *FileHandler) DeletePassword(password Password) error 
 		return readAllError
 	}
 
-	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndexWithoutPassword(password)
+	passwordIndex, getPasswordIndexError := fileHandlerInstance.GetPasswordIndex(password)
 	if getPasswordIndexError != nil {
 		return getPasswordIndexError
 	}
