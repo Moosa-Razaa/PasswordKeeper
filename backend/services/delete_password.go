@@ -39,7 +39,7 @@ func DeletePassword(r *http.Request) (string, int) {
 	err := delete_password_set.DeletePasswordSet(password)
 
 	if err != nil {
-		return "Unable to delete password", http.StatusInternalServerError
+		return err.Error(), http.StatusBadRequest
 	}
 
 	return "Password deleted successfully", http.StatusOK
