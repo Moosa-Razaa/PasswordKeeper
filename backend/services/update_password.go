@@ -32,7 +32,7 @@ func UpdatePassword(r *http.Request) (string, int) {
 		return "error extracting request body", http.StatusBadRequest
 	}
 
-	if requestBody.ValidateUpdatePasswordRequest() {
+	if !requestBody.ValidateUpdatePasswordRequest() {
 		return "invalid request body", http.StatusBadRequest
 	}
 
