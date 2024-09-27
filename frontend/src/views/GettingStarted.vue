@@ -1,9 +1,15 @@
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+    name: 'GettingStarted',
+});
+
 </script>
 
 <template>
     <div class="mainDiv">
-        <h3>Password Keeper</h3>
+        <h2 class="">Password Keeper</h2>
         <div>
             <h3>Welcome to Password Keeper</h3>
             <p>Enter your password to get started</p>

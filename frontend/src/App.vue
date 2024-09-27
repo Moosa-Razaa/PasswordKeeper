@@ -1,6 +1,8 @@
 <script setup>
+import { RouterView } from 'vue-router';
+
 </script>
 
 <template>
-  <h3>Password Keeper</h3>
+  <RouterView />
 </template>
