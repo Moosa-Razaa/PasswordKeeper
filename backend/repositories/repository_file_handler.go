@@ -95,6 +95,15 @@ func (fileHandlerInstance *FileHandler) GetPasswordIndexWithoutPassword(password
 	return -1, errors.New("item not found")
 }
 
+func (fileHandlerInstance *FileHandler) CheckRepositoryExistence() bool {
+	_, fileOpenError := os.Open(fileHandlerInstance.filePath)
+	if fileOpenError != nil {
+		return false
+	}
+
+	return true
+}
+
 func (fileHandlerInstance *FileHandler) ReadAll() ([]Password, error) {
 	fileHandlerInstance.mutex.Lock()
 	defer fileHandlerInstance.mutex.Unlock()
