@@ -11,9 +11,10 @@ export default defineComponent({
     setup() {
         const error = ref<string | null>();
         const loading = ref<boolean>(true);
+        const resource = "repository";
 
         onMounted(async () => {
-            await CheckFileExist("repository")
+            await CheckFileExist(resource)
                 .then((res) => {
                     loading.value = false;
                     if (res) {
