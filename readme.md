@@ -12,11 +12,11 @@ PasswordKeeper is a secure and efficient password management application. This p
 
 - [x] Set up Vue project with TypeScript
 - [x] Set up Go project for backend
-- [ ] Create password generation feature
-- [ ] Create API to save passwords(create)
-- [ ] Create API to read passwords(read)
-- [ ] Create API to modify existing passwords(update)
-- [ ] Creaet API to remove passwords(delete)
+- [x] Create password generation feature
+- [x] Create API to save passwords(create)
+- [x] Create API to read passwords(read)
+- [x] Create API to modify existing passwords(update)
+- [x] Creaet API to remove passwords(delete)
 - [ ] Build UI for generating passwords
 - [ ] Build UI for saving passwords
 - [ ] Build UI for reading passwords
