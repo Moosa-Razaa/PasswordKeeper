@@ -8,19 +8,13 @@ export default defineComponent({
             type: Boolean,
             required: true
         }
-    },
-    setup(props) {
-        console.log("component linked");
-        return {
-            loading: props.loading
-        };
     }
 });
 
 </script>
 
 <template>
-    <div v-if="loading" class="loader"></div>>
+    <div v-if="loading" class="loader"></div>
 </template>
 
 <style lang="css">
