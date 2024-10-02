@@ -10,9 +10,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': '/src',
-      'api': '/src/api',
-      'components': '/src/components',
-      'router': '/src/router',
     }
   }
 })
