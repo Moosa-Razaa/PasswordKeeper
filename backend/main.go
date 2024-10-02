@@ -14,14 +14,18 @@ func main() {
 		panic(initializationError)
 	}
 
-	http.Handle("/generate/password", middlewares.VerifyPost(http.HandlerFunc(controllers.PasswordGeneratorController)))
-	http.Handle("/create", middlewares.VerifyPost(http.HandlerFunc(controllers.AddNewPassword)))
-	http.Handle("/delete", middlewares.VerifyDelete(http.HandlerFunc(controllers.DeletePassword)))
-	http.Handle("/update", middlewares.VerifyPatch(http.HandlerFunc(controllers.UpdatePasswordController)))
-	http.Handle("/get", middlewares.VerifyGet(http.HandlerFunc(controllers.GetAllPasswordsController)))
-	http.Handle("/check/repository", middlewares.VerifyGet(http.HandlerFunc(controllers.CheckFile)))
+	mux := http.NewServeMux()
 
-	serverListeningError := http.ListenAndServe(":8080", nil)
+	mux.Handle("/generate/password", middlewares.VerifyPost(http.HandlerFunc(controllers.PasswordGeneratorController)))
+	mux.Handle("/create", middlewares.VerifyPost(http.HandlerFunc(controllers.AddNewPassword)))
+	mux.Handle("/delete", middlewares.VerifyDelete(http.HandlerFunc(controllers.DeletePassword)))
+	mux.Handle("/update", middlewares.VerifyPatch(http.HandlerFunc(controllers.UpdatePasswordController)))
+	mux.Handle("/get", middlewares.VerifyGet(http.HandlerFunc(controllers.GetAllPasswordsController)))
+	mux.Handle("/check/repository", middlewares.VerifyGet(http.HandlerFunc(controllers.CheckFile)))
+
+	corsMux := middlewares.CORS(mux)
+
+	serverListeningError := http.ListenAndServe(":8080", corsMux)
 
 	if serverListeningError != nil {
 		panic(serverListeningError)
